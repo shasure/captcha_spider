@@ -4,5 +4,6 @@ pyyaml
 parsel
 opencv-python
 pyinstaller
+ddddocr
 baidu-aip
 muggle-ocr

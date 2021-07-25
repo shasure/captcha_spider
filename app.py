@@ -38,7 +38,10 @@ if __name__ == '__main__':
         captcha_url="http://12349.mzj.nanjing.gov.cn/code/1627189499057",
         captcha_feedback_url="http://12349.mzj.nanjing.gov.cn/admin/beforeLogin"
     )
-    pool = mul.Pool(3)
+    pool = mul.Pool(2)
     for project in [project_ddddocr, project_sixsixocr]:
-        pool.apply(start_project, (project, 11000))
+        pool.apply_async(start_project, (project, 11000))
+    pool.close()
+    pool.join()
+
     print("finished.")
