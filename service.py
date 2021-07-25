@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 # Author: kerlomz <kerlomz@gmail.com>
+import base64
 import os
 import requests
 from constants import ServiceType, ConstAPI
@@ -17,6 +18,30 @@ class MuggleOCR(object):
 
     def request(self, img_bytes):
         return self.sdk.predict(img_bytes)
+
+
+class DdddOCR(object):
+
+    def __init__(self):
+        import ddddocr
+        self.ocr = ddddocr.DdddOcr()
+
+    def request(self, img_bytes):
+        return self.ocr.classification(img_bytes)
+
+
+class SixsixOCR(object):
+
+    def __init__(self):
+        self.baseurl = "https://tapi.66sj.cn/api/yzm_orc"
+        self.session = requests.Session()
+
+    def request(self, img_bytes):
+        data = {"img": base64.b64encode(img_bytes)}
+        res_json = self.session.post(self.baseurl, data).json()
+        if res_json['code'] == 200:
+            return res_json['data']['text']
+        return None
 
 
 class BaiduOCR(object):
@@ -103,6 +128,10 @@ class GetCaptchaText(object):
             self.api = BaiduOCR()
         elif self.service_type == ServiceType.MuggleOCR:
             self.api = MuggleOCR()
+        elif self.service_type == ServiceType.ddddocr:
+            self.api = DdddOCR()
+        elif self.service_type == ServiceType.sixsixocr:
+            self.api = SixsixOCR()
         else:
             raise ValueError('invalid service_type')
 
@@ -121,6 +150,12 @@ class GetCaptchaText(object):
             return self.api.request(img_bytes)
 
         elif self.service_type == ServiceType.BaiduOCR:
+            return self.api.request(img_bytes)
+
+        elif self.service_type == ServiceType.ddddocr:
+            return self.api.request(img_bytes)
+
+        elif self.service_type == ServiceType.sixsixocr:
             return self.api.request(img_bytes)
 
 

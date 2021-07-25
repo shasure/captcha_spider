@@ -55,6 +55,7 @@ class Project(object):
             self,
             service_type: ServiceType = None,
             captcha_url: str = None,
+            captcha_feedback_url: str = None,
             captcha_length: Union[list, int] = None,
             captcha_charset: Charset = Charset.UNDEFINED,
             platform_type: str = None,
@@ -72,9 +73,10 @@ class Project(object):
         self.captcha_length: Union[list, int] = captcha_length
         self.captcha_charset: Charset = captcha_charset
         self.should_stop = False
-        self.service_type = service_type if service_type else ServiceType.Kerlomz
+        self.service_type = service_type if service_type else ServiceType.ddddocr
         self.platform_type = platform_type if platform_type else "1105"
         self._captcha_url = captcha_url
+        self._captcha_feedback_url = captcha_feedback_url
 
         project_name = self.__class__.__name__
         if project_name == 'Project' and self._captcha_url:
@@ -89,7 +91,7 @@ class Project(object):
         self.proxy = Proxy.no_proxy
         self.true_count: int = 0
         self.false_count: int = 0
-        self.save_false: bool = False
+        self.save_false: bool = True
         self.before_params: dict = {}
         self.platform: GetCaptchaText = None
         self.delay: float = 0
@@ -225,7 +227,14 @@ class Project(object):
         pass
 
     def feedback_process(self, captcha_text: str) -> bool:
-        pass
+        # 提交captcha，判断captcha对错
+        data = {'login_name': 'admin',
+                'pass_word': hashlib.md5(os.urandom(4)).hexdigest(),
+                'codevalidate': captcha_text}
+        formpost_res = self.session.post(self._captcha_feedback_url, data)
+        if "验证码错误" in formpost_res.text:
+            return False
+        return True
 
     def process(self, index):
         st = time.time()

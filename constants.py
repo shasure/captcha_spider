@@ -31,6 +31,8 @@ class ServiceType(Enum):
     MuggleOCR = 'MuggleOCR'
     BaiduOCR = 'BaiduOCR'
     LianZhong = 'LianZhong'
+    ddddocr = 'ddddocr'
+    sixsixocr = 'sixsixocr'
 
 
 @unique
