@@ -227,14 +227,7 @@ class Project(object):
         pass
 
     def feedback_process(self, captcha_text: str) -> bool:
-        # 提交captcha，判断captcha对错
-        data = {'login_name': 'admin',
-                'pass_word': hashlib.md5(os.urandom(4)).hexdigest(),
-                'codevalidate': captcha_text}
-        formpost_res = self.session.post(self._captcha_feedback_url, data)
-        if "验证码错误" in formpost_res.text:
-            return False
-        return True
+        pass
 
     def process(self, index):
         st = time.time()
